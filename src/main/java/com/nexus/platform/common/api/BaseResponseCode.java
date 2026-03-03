@@ -2,6 +2,7 @@ package com.nexus.platform.common.api;
 
 public enum BaseResponseCode {
     SUCCESS(0, "成功"),
+    UNAUTHORIZED(401, "未认证或token无效"),
     BAD_REQUEST(400, "请求参数错误"),
     NOT_FOUND(404, "资源不存在"),
     METHOD_NOT_ALLOWED(405, "请求方法不支持"),

@@ -16,3 +16,16 @@ logging:
   level:
     root: INFO
     com.nexus.platform: INFO
+
+security:
+  auth:
+    enabled: true
+    header-name: Authorization
+    token-prefix: "Bearer "
+    secret: ${JWT_SECRET:please-change-this-to-32chars-min-secret}
+    issuer: nexus-platform-services
+    expire-minutes: 120
+    exclude-paths:
+      - /api/auth/**
+      - /error
+      - /favicon.ico
