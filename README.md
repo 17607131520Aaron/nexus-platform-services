@@ -47,15 +47,12 @@ java -jar target/nexus-platform-services-1.0.0-SNAPSHOT.jar --spring.profiles.ac
 ### 统一响应示例
 ```json
 {
-  "code": "0",
-  "messageKey": "success",
-  "message": "成功",
+  "code": 0,
   "data": {
     "id": 1,
     "username": "alice",
     "email": "alice@example.com"
   },
-  "timestamp": 1700000000000,
-  "traceId": "2f2b5a82c3f64f4f8f80ee8c11f3f9c4"
+  "message": "成功"
 }
 ```

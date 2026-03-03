@@ -18,13 +18,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("USER_NOT_FOUND", "用户不存在"));
+                .orElseThrow(() -> new BusinessException(100404, "用户不存在"));
     }
 
     @Override
     public UserEntity create(String username, String email) {
         userRepository.findByUsername(username).ifPresent(it -> {
-            throw new BusinessException("USERNAME_EXISTS", "用户名已存在");
+            throw new BusinessException(100409, "用户名已存在");
         });
 
         UserEntity user = new UserEntity();

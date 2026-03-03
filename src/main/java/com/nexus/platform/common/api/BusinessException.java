@@ -2,14 +2,14 @@ package com.nexus.platform.common.api;
 
 public class BusinessException extends RuntimeException {
 
-    private final String code;
+    private final int code;
 
-    public BusinessException(String code, String message) {
+    public BusinessException(int code, String message) {
         super(message);
         this.code = code;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 }
