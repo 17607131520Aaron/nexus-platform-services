@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: nexus-platform-services
+  profiles:
+    active: local
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.nexus.platform: INFO
