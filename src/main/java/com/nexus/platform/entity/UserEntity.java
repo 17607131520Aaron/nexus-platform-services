@@ -1,29 +1,52 @@
 package com.nexus.platform.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
-@Entity
-@Table(name = "users")
+@Setter
+@TableName("users")
 public class UserEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    @Setter
-    @Column(nullable = false, unique = true, length = 64)
+    @TableField("username")
     private String username;
 
-    @Setter
-    @Column(nullable = false, unique = true, length = 128)
+    @TableField("realName")
+    private String realName;
+
+    @TableField("password")
+    private String password;
+
+    @TableField("email")
     private String email;
 
+    @TableField("phone")
+    private String phone;
+
+    @TableField("status")
+    private Byte status;
+
+    @TableField("createdAt")
+    private LocalDateTime createdAt;
+
+    @TableField("updatedAt")
+    private LocalDateTime updatedAt;
+
+    @TableField("wechatOpenId")
+    private String wechatOpenId;
+
+    @TableField("wechatNickName")
+    private String wechatNickName;
+
+    @TableField("wechatAvatarUrl")
+    private String wechatAvatarUrl;
 }

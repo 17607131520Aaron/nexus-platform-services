@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -19,15 +20,26 @@ import java.util.Date;
 public class JwtTokenService {
 
     private final AuthProperties authProperties;
+    private final Environment environment;
     private SecretKey signingKey;
 
-    public JwtTokenService(AuthProperties authProperties) {
+    public JwtTokenService(AuthProperties authProperties, Environment environment) {
         this.authProperties = authProperties;
+        this.environment = environment;
     }
 
     @PostConstruct
     public void init() {
-        byte[] keyBytes = authProperties.getSecret().getBytes(StandardCharsets.UTF_8);
+        String secret = authProperties.getSecret();
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("security.auth.secret 不能为空（建议通过环境变量JWT_SECRET配置）");
+        }
+
+        if (isPlaceholderSecret(secret) && !isLocalOrTest()) {
+            throw new IllegalStateException("检测到默认JWT密钥占位符，非local/test环境禁止启动，请配置JWT_SECRET");
+        }
+
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         if (keyBytes.length < 32) {
             throw new IllegalStateException("security.auth.secret长度至少32个字符");
         }
@@ -57,5 +69,18 @@ public class JwtTokenService {
         } catch (JwtException | IllegalArgumentException e) {
             throw new UnauthorizedException(BaseResponseCode.UNAUTHORIZED.code(), "token无效或已过期");
         }
+    }
+
+    private boolean isLocalOrTest() {
+        for (String p : environment.getActiveProfiles()) {
+            if ("local".equalsIgnoreCase(p) || "test".equalsIgnoreCase(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isPlaceholderSecret(String secret) {
+        return "please-change-this-to-32chars-min-secret".equals(secret);
     }
 }

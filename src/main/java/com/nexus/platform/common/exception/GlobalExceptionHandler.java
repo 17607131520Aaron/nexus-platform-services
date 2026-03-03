@@ -4,6 +4,7 @@ import com.nexus.platform.common.api.ApiResponse;
 import com.nexus.platform.common.api.BaseResponseCode;
 import com.nexus.platform.common.api.BusinessException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -24,7 +25,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException ex) {
-        return ResponseEntity.badRequest().body(ApiResponse.fail(ex.getCode(), ex.getMessage()));
+        HttpStatus status = mapBusinessStatus(ex.getCode());
+        return ResponseEntity.status(status).body(ApiResponse.fail(ex.getCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.fail(100409, "数据冲突（可能是唯一键重复）")
+        );
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class})
@@ -68,5 +77,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 ApiResponse.fail(BaseResponseCode.INTERNAL_ERROR, BaseResponseCode.INTERNAL_ERROR.defaultMessage())
         );
+    }
+
+    private HttpStatus mapBusinessStatus(int code) {
+        if (code == 100404) {
+            return HttpStatus.NOT_FOUND;
+        }
+        if (code == 100409) {
+            return HttpStatus.CONFLICT;
+        }
+        return HttpStatus.BAD_REQUEST;
     }
 }

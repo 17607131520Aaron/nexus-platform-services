@@ -4,7 +4,7 @@ import com.nexus.platform.entity.UserEntity;
 
 public interface UserService {
 
-    UserEntity findById(Long id);
+    UserEntity findById(Integer id);
 
-    UserEntity create(String username, String email);
+    UserEntity create(String username, String email, String password, String realName, String phone);
 }

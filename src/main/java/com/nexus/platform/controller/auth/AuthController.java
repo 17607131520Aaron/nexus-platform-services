@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     public record TokenRequest(
-            @NotBlank(message = "username不能为空") String username
+            @NotBlank(message = "username 不能为空") String username
     ) {
     }
 
